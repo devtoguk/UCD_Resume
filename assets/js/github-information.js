@@ -37,11 +37,12 @@ function repoInformationHTML(repos) {
 }
 
 function fetchGitHubInformation(event) {
+    $("#gh-user-data").html("");
+    $("#gh-repo-data").html(`<h2>&nbsp;</h2>`);
 
     var username = $("#gh-username").val();
     if (!username) {
         $("#gh-user-data").html(`<h2>Please enter a GitHub username</h2>`);
-        $("#gh-repo-data").html(`<h2>&nbsp;</h2>`);
         return;
     }
 
@@ -52,8 +53,8 @@ function fetchGitHubInformation(event) {
 
     tokenBit = "?&access_token=6c95e02495eada5e9eeff638f8471dd22b219ac6";
     $.when(
-        $.getJSON(`https://api.github.com/users/${username}${tokenBit}`),
-        $.getJSON(`https://api.github.com/users/${username}/repos${tokenBit}`)
+        $.getJSON(`https://cors-anywhere.herokuapp.com/https://api.github.com/users/${username}`),
+        $.getJSON(`https://cors-anywhere.herokuapp.com/https://api.github.com/users/${username}/repos`)
     ).then(
         function(firstResponse, secondResponse) {
             var userData = firstResponse[0];
@@ -66,7 +67,7 @@ function fetchGitHubInformation(event) {
                 $("#gh-user-data").html(
                     `<h2>No info found for user ${username}</h2>`);
                 $("#gh-repo-data").html(`<h2>&nbsp;</h2>`);
-    
+
             } else {
                 console.log(errorResponse);
                 $("#gh-user-data").html(
@@ -75,3 +76,5 @@ function fetchGitHubInformation(event) {
             }
         });
 }
+
+$(document).ready(fetchGitHubInformation);
